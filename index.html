@@ -1,14 +1,256 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fio e Folha — Cadernos artesanais e presentes personalizados</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fio e Folha — Cadernos artesanais e presentes personalizados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--ff-primary:#A65D3F;--ff-primary-hover:#B96B4A;--ff-primary-active:#8A4A31;--ff-primary-100:#F3DDD2;
+--ff-sage:#8A9A7B;--ff-kraft:#C49A6C;--ff-sand:#E8D9C3;--ff-wax:#7A2E2E;
+--ff-bg-page:#FBF7F1;--ff-bg-surface:#FFFFFF;--ff-bg-muted:#F3ECE0;
+--ff-border-subtle:#E6DCCB;--ff-border-default:#CFC1AB;
+--ff-text:#2E2620;--ff-text-2:#6B5D50;--ff-text-dis:#A89B8C;
+--ff-info:#5E7A8A;--ff-info-bg:#E1EAEE;--ff-btn-text:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--ff-primary:#D08A69;--ff-primary-hover:#DC9A7A;--ff-primary-active:#B96B4A;--ff-primary-100:#4A2F24;
+--ff-sand:#3A3128;--ff-bg-page:#1F1A16;--ff-bg-surface:#2A231E;--ff-bg-muted:#332B24;
+--ff-border-subtle:#3F352C;--ff-border-default:#5A4C3F;--ff-text:#F3ECE0;--ff-text-2:#BFB1A0;--ff-text-dis:#7D7062;
+--ff-info-bg:#26343B;--ff-btn-text:#1F1A16}}
+:root[data-theme="dark"]{
+--ff-primary:#D08A69;--ff-primary-hover:#DC9A7A;--ff-primary-active:#B96B4A;--ff-primary-100:#4A2F24;
+--ff-sand:#3A3128;--ff-bg-page:#1F1A16;--ff-bg-surface:#2A231E;--ff-bg-muted:#332B24;
+--ff-border-subtle:#3F352C;--ff-border-default:#5A4C3F;--ff-text:#F3ECE0;--ff-text-2:#BFB1A0;--ff-text-dis:#7D7062;
+--ff-info-bg:#26343B;--ff-btn-text:#1F1A16}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ff-bg-page);color:var(--ff-text);font:400 16px/1.6 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;margin:0;color:var(--ff-text)}
+h1{font-weight:300;font-size:clamp(40px,7vw,56px);line-height:1.1}
+h2{font-weight:400;font-size:clamp(30px,5vw,40px);line-height:1.2}
+h3{font-weight:600;font-size:clamp(24px,3vw,28px);line-height:1.25}
+.over{font:600 12px/1.3 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ff-text-2)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+section{padding:clamp(64px,8vw,96px) 0}
+.alt{background:var(--ff-sand)}
+p{max-width:65ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 24px;border-radius:4px;font:600 15px Inter,sans-serif;letter-spacing:.02em;cursor:pointer;border:1px solid var(--ff-primary);text-decoration:none;transition:150ms ease-out}
+.btn.p{background:var(--ff-primary);color:var(--ff-btn-text)}.btn.p:hover{background:var(--ff-primary-hover)}.btn.p:active{background:var(--ff-primary-active)}
+.btn.s{background:transparent;color:var(--ff-primary)}.btn.s:hover{background:var(--ff-primary-100)}
+:focus-visible{outline:2px solid var(--ff-primary);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--ff-bg-page);border-bottom:1px solid var(--ff-border-subtle)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;color:var(--ff-text);text-decoration:none}
+nav{display:flex;gap:24px;overflow-x:auto}
+nav a{color:var(--ff-text-2);text-decoration:none;font-size:14px;white-space:nowrap}nav a:hover{color:var(--ff-primary)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.hero p{font-size:18px;color:var(--ff-text-2);margin:24px 0 32px}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap}
+.book{aspect-ratio:4/5;background:var(--ff-bg-muted);border-radius:12px;display:grid;place-items:center;padding:24px}
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+.cat{background:var(--ff-bg-surface);border-radius:8px;padding:24px;box-shadow:0 1px 2px rgba(46,38,32,.06);border:1px solid var(--ff-border-subtle)}
+.cat i{display:block;height:96px;border-radius:8px;margin-bottom:16px}
+.cat p{font-size:14px;color:var(--ff-text-2);margin:8px 0 0}
+.cat a{display:inline-block;margin-top:12px;color:var(--ff-primary);font-weight:600;font-size:14px}
+/* configurator */
+.cfg{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;margin-top:40px;align-items:start}
+.prev{position:sticky;top:calc(80px + env(safe-area-inset-top,0px));background:var(--ff-bg-muted);border-radius:12px;padding:32px}
+.stage{height:340px;display:grid;place-items:center}
+.nb{position:relative;border-radius:4px 10px 10px 4px;box-shadow:0 8px 24px rgba(46,38,32,.08);transition:all .3s ease;background:var(--cov,#A65D3F);overflow:hidden}
+.nb::before{content:"";position:absolute;left:8%;top:0;bottom:0;width:2px;background:rgba(0,0,0,.18)}
+.nb.tex{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.12) 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,rgba(0,0,0,.08) 0 2px,transparent 2px 5px)}
+.nb .el{position:absolute;right:14%;top:0;bottom:0;width:6px;background:#2E2620;display:none}
+.nb .rb{position:absolute;left:52%;bottom:-10px;width:5px;height:24px;background:#E8D9C3;display:none;box-shadow:12px 0 #C49A6C}
+.nb .pl{position:absolute;right:0;top:36%;width:22px;height:60px;background:rgba(0,0,0,.25);border-radius:6px 0 0 6px;display:none}
+.nb .cn{position:absolute;width:14px;height:14px;background:#C49A6C;display:none}
+.nb .cn.a{top:0;right:0}.nb .cn.b{bottom:0;right:0}.nb .cn.c{top:0;left:0}.nb .cn.d{bottom:0;left:0}
+.nb b{position:absolute;left:0;right:0;top:40%;text-align:center;font:italic 400 22px 'Cormorant Garamond',serif;color:rgba(255,255,255,.9)}
+.pinfo{margin-top:16px;color:var(--ff-text-2);font-size:14px;text-align:center}
+.step{border-top:1px solid var(--ff-border-subtle);padding:24px 0}
+.step:first-child{border-top:0;padding-top:0}
+.step h3{margin:4px 0 4px}.step small{display:block;color:var(--ff-text-2);margin-bottom:16px}
+.opts{display:flex;flex-wrap:wrap;gap:12px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:block;padding:10px 16px;border:1px solid var(--ff-border-default);border-radius:4px;background:var(--ff-bg-surface);font-size:14px;transition:150ms}
+.chip span em{display:block;font-style:normal;color:var(--ff-text-2);font-size:13px}
+.chip input:checked+span{border:2px solid var(--ff-primary);background:var(--ff-primary-100);padding:9px 15px}
+.chip input:focus-visible+span{outline:2px solid var(--ff-primary);outline-offset:2px}
+.chip input:disabled+span{opacity:.4;background:var(--ff-bg-muted);cursor:not-allowed}
+.sw{display:flex;gap:12px;flex-wrap:wrap}
+.sw label{position:relative;width:44px;height:44px}
+.sw input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.sw span{display:block;width:44px;height:44px;border-radius:999px;border:1px solid var(--ff-border-subtle);background:var(--c)}
+.sw input:checked+span{box-shadow:0 0 0 2px var(--ff-bg-page),0 0 0 4px var(--ff-primary)}
+.sw input:focus-visible+span{outline:2px solid var(--ff-primary);outline-offset:4px}
+.cur{margin-top:8px;font-size:14px;color:var(--ff-text-2)}
+.note{background:var(--ff-info-bg);border-radius:4px;padding:10px 14px;font-size:14px;margin-top:12px;display:none}
+.note.on{display:block}
+.up{margin-top:12px;font-size:14px;display:none}.up.on{display:block}
+.tot{margin-top:24px;padding:20px;background:var(--ff-bg-surface);border:1px solid var(--ff-border-subtle);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.tot strong{font:600 28px 'Cormorant Garamond',serif;display:block}
+.kits{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.kit{background:var(--ff-bg-surface);border-radius:8px;padding:24px;border:1px solid var(--ff-border-subtle)}
+.kit s{color:var(--ff-text-dis);font-size:14px}.kit .pr{font:600 28px 'Cormorant Garamond',serif;color:var(--ff-primary)}
+.unb{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px;counter-reset:u}
+.unb div{padding-top:16px;border-top:2px solid var(--ff-kraft)}
+.unb div::before{counter-increment:u;content:"0" counter(u);font:600 12px Inter;letter-spacing:.12em;color:var(--ff-text-2)}
+.unb h3{margin:4px 0 8px}
+footer{background:var(--ff-sand);padding:48px 0;color:var(--ff-text-2);font-size:14px}
+@media(max-width:900px){.hero,.cfg{grid-template-columns:1fr}.cats{grid-template-columns:1fr 1fr}.kits,.unb{grid-template-columns:1fr}.prev{position:static}.book{aspect-ratio:auto;height:280px}.btn{height:56px}}
+@media(max-width:520px){.cats{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:520px){#f .tot>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}}
+</style>
 </head>
 <body>
-  <main>
-    <h1>Fio e Folha</h1>
-    <p>Cadernos artesanais e presentes personalizados.</p>
-  </main>
+<header><div class="wrap"><a class="logo" href="#">Fio e Folha</a>
+<nav><a href="#categorias">Categorias</a><a href="#cadernos">Cadernos</a><a href="#kits">Kits</a><a href="#unboxing">Unboxing</a></nav>
+<a class="btn s" href="#cadernos" style="height:40px">Carrinho (0)</a></div></header>
+
+<section><div class="wrap hero">
+<div><div class="over">Encadernação artesanal · Presentes personalizados</div>
+<h1 style="margin-top:16px">Precisão de design, calor de trabalho manual.</h1>
+<p>Cadernos costurados à mão, envelopes vazados em impressão 3D e kits de presente. Você monta cada detalhe e vê o resultado antes de finalizar.</p>
+<div class="btns"><a class="btn p" href="#cadernos">Criar meu presente</a><a class="btn s" href="#kits">Montar minha caixa</a></div></div>
+<div class="book"><div class="nb tex" style="--cov:#A65D3F;width:62%;aspect-ratio:5/7"><b>Fio e Folha</b></div></div>
+</div></section>
+
+<section class="alt" id="categorias"><div class="wrap">
+<div class="over">Catálogo</div><h2 style="margin-top:8px">Quatro jeitos de presentear</h2>
+<div class="cats">
+<div class="cat"><i style="background:#A65D3F"></i><h3>Cadernos</h3><p>Tamanho, miolo, capa e aviamentos.</p><a href="#cadernos">Personalizar detalhes</a></div>
+<div class="cat"><i style="background:#8A9A7B"></i><h3>Envelopes 3D</h3><p>Vazados, com papel e fita à sua escolha.</p><a href="#kits">Escolher acabamentos</a></div>
+<div class="cat"><i style="background:#C49A6C"></i><h3>Chaveiros</h3><p>Nome ou símbolo da profissão.</p><a href="#kits">Criar meu presente</a></div>
+<div class="cat"><i style="background:#7A2E2E"></i><h3>Kits e caixas</h3><p>Caixa Panamá com laço e selo de cera.</p><a href="#kits">Montar minha caixa</a></div>
+</div></div></section>
+
+<section id="cadernos"><div class="wrap">
+<div class="over">Construtor · Cadernos</div><h2 style="margin-top:8px">Monte seu caderno</h2>
+<div class="cfg">
+<div class="prev"><div class="stage"><div class="nb tex" id="nb"><b id="nbl">Fio e Folha</b><i class="el" id="el"></i><i class="rb" id="rb"></i><i class="pl" id="pl"></i><i class="cn a"></i><i class="cn b"></i><i class="cn c"></i><i class="cn d"></i></div></div>
+<div class="pinfo" id="pinfo"></div></div>
+
+<form id="f" onsubmit="return false">
+<div class="step"><div class="over">Etapa 1</div><h3>Tamanho</h3><small>Base inclui 80 folhas de sulfite 90g e capa simples.</small>
+<div class="opts" id="o-size"></div></div>
+<div class="step"><div class="over">Etapa 2</div><h3>Volume</h3><small>Quantidade de folhas.</small>
+<div class="opts" id="o-vol"></div><div class="note" id="n-vol">Papel aquarelável 300g: caderno de 20 folhas (edição especial). O volume fica bloqueado.</div></div>
+<div class="step"><div class="over">Etapa 3</div><h3>Miolo</h3><small>Escolha pela função do papel.</small><div class="opts" id="o-paper"></div></div>
+<div class="step"><div class="over">Etapa 4</div><h3>Capa</h3><small>Tato e identidade visual.</small><div class="opts" id="o-mat"></div>
+<div style="margin-top:16px" class="sw" id="o-color" role="radiogroup" aria-label="Cor da capa"></div><div class="cur" id="cname"></div></div>
+<div class="step"><div class="over">Etapa 5</div><h3>Aviamentos</h3><small>Escolha quantos quiser.</small><div class="opts" id="o-av"></div></div>
+<div class="step"><div class="over">Etapa 6</div><h3>Embalagem e unboxing</h3><small>Sacola com papel de seda e fecho de cera.</small><div class="opts" id="o-pack"></div>
+<div class="up" id="up"><label>Enviar arquivo da logo (vira carimbo 3D): <input type="file" accept="image/*"></label></div></div>
+<div class="tot"><div style="width:100%">
+<div class="over">Seus dados para o pedido</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px">
+<label style="display:grid;gap:6px;font-size:14px">Nome<input id="customer-name" name="customer-name" autocomplete="name" required style="height:44px;padding:0 12px;border:1px solid var(--ff-border-default);border-radius:4px;background:var(--ff-bg-surface);color:var(--ff-text)"></label>
+<label style="display:grid;gap:6px;font-size:14px">Telefone<input id="customer-phone" name="customer-phone" autocomplete="tel" inputmode="tel" required style="height:44px;padding:0 12px;border:1px solid var(--ff-border-default);border-radius:4px;background:var(--ff-bg-surface);color:var(--ff-text)"></label>
+</div></div>
+<div><span class="over">Total do caderno</span><strong id="tot">R$ 45,00</strong></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn s" type="button" onclick="location.hash='kits'">Montar minha caixa</button><button id="finish-order" class="btn p" type="button">Concluir presente</button></div>
+<div id="order-status" class="note" role="status" aria-live="polite" style="width:100%"></div></div>
+</form>
+</div></div></section>
+
+<section class="alt" id="kits"><div class="wrap">
+<div class="over">Kits e combos</div><h2 style="margin-top:8px">Presente completo, na caixa</h2>
+<p style="color:var(--ff-text-2)">Caixa Panamá com revestimento em papel adesivo (incluso) ou tecido premium (+ R$ 15,00).</p>
+<div class="kits">
+<div class="kit"><h3>O Essencial</h3><p>Caderno A5 + caneta padrão.</p><s>R$ 85,00</s><div class="pr">R$ 75,00</div><a class="btn s" href="#cadernos">Preparar conjunto</a></div>
+<div class="kit"><h3>Dia a Dia</h3><p>Caderno A5 + chaveiro símbolo.</p><s>R$ 60,00</s><div class="pr">R$ 55,00</div><a class="btn s" href="#cadernos">Preparar conjunto</a></div>
+<div class="kit"><h3>Formatura Completo</h3><p>Caderno, caneta, chaveiro símbolo e envelope 3D.</p><s>R$ 115,00</s><div class="pr">R$ 99,00</div><a class="btn s" href="#cadernos">Preparar conjunto</a></div>
+</div></div></section>
+
+<section id="unboxing"><div class="wrap">
+<div class="over">Experiência de unboxing</div><h2 style="margin-top:8px">Cada detalhe, até o selo</h2>
+<div class="unb">
+<div><h3>O produto finalizado</h3><p>Costurado e conferido à mão, com a sua ficha de fabricação.</p></div>
+<div><h3>Papel de seda</h3><p>Cor harmonizada ao caderno, envolvendo o presente.</p></div>
+<div><h3>Selo de cera</h3><p>Matriz impressa em 3D com a inicial, o símbolo da profissão ou a sua logo.</p></div>
+</div></div></section>
+
+<footer><div class="wrap">Fio e Folha · Feito à mão, sob demanda.</div></footer>
+
+<script>
+const SUPABASE_URL='https://xzcaveuocpypnzqkrsic.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_70wMBw1XQz0IIia-V5lohA_jCsnGTy-';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const $=id=>document.getElementById(id);
+const R=v=>'R$ '+v.toFixed(2).replace('.',',');
+const sign=v=>v===0?'incluso':(v>0?'+ ':'− ')+R(Math.abs(v));
+const D={
+size:[['A5','A5 · 15×21 cm',45],['A6','A6 · 10,5×14,8 cm',38],['A7','A7 · 7,4×10,5 cm',30]],
+vol:[[40,'40 folhas',-6],[60,'60 folhas',-3],[80,'80 folhas',0],[100,'100 folhas',6],[120,'120 folhas',12]],
+paper:[['sulfite','Sulfite 90g (branco)',0],['polen','Pólen 90g (leitura)',5],['offset','Offset 120g (caneta gel)',10],['aqua','Aquarelável 300g',null]],
+mat:[['liso','Tecido simples / papel liso',0,0],['premium','Tecido premium (linho, algodão)',10,1],['sust','Material sustentável (couro vegetal)',18,1],['estampa','Estampa autoral exclusiva',20,1]],
+av:[['fita1','Fita marcadora simples',2],['fita2','Fita marcadora dupla',3],['macrame','Marcador em macramê',10],['elastico','Elástico de fechamento',5],['porta','Porta-caneta lateral',10],['canto','Cantoneiras metálicas (4x)',8]],
+pack:[['basica','Básica: papel de seda',0],['letra','Cera básico: inicial do nome',5],['prof','Cera profissão: símbolo',10],['logo','Cera exclusiva: sua logo',15]],
+col:[['Terracota','#A65D3F'],['Sálvia','#8A9A7B'],['Kraft','#C49A6C'],['Bordô','#7A2E2E'],['Azul-petróleo','#3E5C6B'],['Areia','#D9C4A3']]
+};
+const AQ={A5:40,A6:20,A7:10};
+const S={size:'A5',vol:80,paper:'sulfite',mat:'liso',col:0,av:new Set(),pack:'basica'};
+function chips(id,name,items,sel,fn){
+ $(id).innerHTML=items.map(i=>`<label class="chip"><input type="radio" name="${name}" value="${i[0]}" ${String(i[0])===String(sel)?'checked':''} ${i.dis?'disabled':''}><span>${i[1]}<em>${i[2]}</em></span></label>`).join('');
+ $(id).querySelectorAll('input').forEach(x=>x.onchange=()=>{fn(x.value);draw()});
+}
+function draw(){
+ const aqua=S.paper==='aqua';
+ chips('o-size','size',D.size.map(d=>[d[0],d[1],R(d[2])]),S.size,v=>S.size=v);
+ chips('o-vol','vol',aqua?[[20,'20 folhas · edição aquarela','incluso']]:D.vol.map(d=>[d[0],d[1],sign(d[2])]),aqua?20:S.vol,v=>S.vol=+v);
+ $('n-vol').classList.toggle('on',aqua);
+ chips('o-paper','paper',D.paper.map(d=>[d[0],d[1],d[2]===null?sign(AQ[S.size])+' ('+S.size+')':sign(d[2])]),S.paper,v=>S.paper=v);
+ chips('o-mat','mat',D.mat.map(d=>[d[0],d[1],sign(d[2])]),S.mat,v=>S.mat=v);
+ $('o-color').innerHTML=D.col.map((c,i)=>`<label title="${c[0]}"><input type="radio" name="col" value="${i}" aria-label="${c[0]}" ${i===S.col?'checked':''}><span style="--c:${c[1]}"></span></label>`).join('');
+ $('o-color').querySelectorAll('input').forEach(x=>x.onchange=()=>{S.col=+x.value;draw()});
+ $('cname').textContent='Cor: '+D.col[S.col][0];
+ $('o-av').innerHTML=D.av.map(a=>`<label class="chip"><input type="checkbox" value="${a[0]}" ${S.av.has(a[0])?'checked':''}><span>${a[1]}<em>${sign(a[2])}</em></span></label>`).join('');
+ $('o-av').querySelectorAll('input').forEach(x=>x.onchange=()=>{x.checked?S.av.add(x.value):S.av.delete(x.value);draw()});
+ chips('o-pack','pack',D.pack.map(d=>[d[0],d[1],sign(d[2])]),S.pack,v=>S.pack=v);
+ $('up').classList.toggle('on',S.pack==='logo');
+ // price
+ let t=D.size.find(d=>d[0]===S.size)[2];
+ if(aqua)t+=AQ[S.size];else{t+=D.vol.find(d=>d[0]===S.vol)[2];t+=D.paper.find(d=>d[0]===S.paper)[2]}
+ t+=D.mat.find(d=>d[0]===S.mat)[2];
+ S.av.forEach(k=>t+=D.av.find(d=>d[0]===k)[2]);
+ t+=D.pack.find(d=>d[0]===S.pack)[2];
+ $('tot').textContent=R(t);
+ // preview
+ const dim={A5:[190,266],A6:[150,210],A7:[106,150]}[S.size];
+ const nb=$('nb');nb.style.width=dim[0]+'px';nb.style.height=dim[1]+'px';
+ nb.style.setProperty('--cov',D.col[S.col][1]);
+ nb.classList.toggle('tex',S.mat!=='liso');
+ $('el').style.display=S.av.has('elastico')?'block':'none';
+ $('rb').style.display=(S.av.has('fita1')||S.av.has('fita2')||S.av.has('macrame'))?'block':'none';
+ $('pl').style.display=S.av.has('porta')?'block':'none';
+ nb.querySelectorAll('.cn').forEach(c=>c.style.display=S.av.has('canto')?'block':'none');
+ const mat=D.mat.find(d=>d[0]===S.mat)[1];
+ $('pinfo').textContent=S.size+' · '+(aqua?20:S.vol)+' folhas · '+D.col[S.col][0]+' · '+mat;
+}
+draw();
+
+$('finish-order').addEventListener('click',async()=>{
+ const status=$('order-status');
+ const name=$('customer-name').value.trim();
+ const phone=$('customer-phone').value.trim();
+ if(!name||!phone){ status.textContent='Preencha seu nome e telefone para concluir o pedido.'; status.classList.add('on'); return; }
+ const aqua=S.paper==='aqua';
+ let total=D.size.find(d=>d[0]===S.size)[2];
+ if(aqua) total+=AQ[S.size]; else { total+=D.vol.find(d=>d[0]===S.vol)[2]; total+=D.paper.find(d=>d[0]===S.paper)[2]; }
+ total+=D.mat.find(d=>d[0]===S.mat)[2];
+ S.av.forEach(k=>total+=D.av.find(d=>d[0]===k)[2]);
+ total+=D.pack.find(d=>d[0]===S.pack)[2];
+ const configuration={size:S.size,volume:aqua?20:S.vol,paper:S.paper,cover:S.mat,color:D.col[S.col][0],accessories:Array.from(S.av),packaging:S.pack,logo_file:$('up').querySelector('input[type=file]')?.files?.[0]?.name||null};
+ const {error:infoError}=await supabaseClient.from('Informações').insert({Nome:name,Telefone:phone});
+ if(infoError){console.error(infoError);status.textContent='Não foi possível salvar seus dados. Tente novamente.';status.classList.add('on');return;}
+ const {error}=await supabaseClient.from('orders').insert({status:'pending',total:Number(total.toFixed(2)),configuration});
+ if(error){console.error(error);status.textContent='Seus dados foram salvos, mas não foi possível registrar o pedido. Tente novamente.';status.classList.add('on');return;}
+ status.textContent='Pedido registrado com sucesso. Em breve entraremos em contato para confirmar os detalhes.'; status.classList.add('on');
+});
+</script>
 </body>
 </html>
