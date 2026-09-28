@@ -6,6 +6,7 @@
 <title>Fio e Folha — Cadernos artesanais e presentes personalizados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -177,8 +178,8 @@ footer{background:var(--ff-sand);padding:48px 0;color:var(--ff-text-2);font-size
 <footer><div class="wrap">Fio e Folha · Feito à mão, sob demanda.</div></footer>
 
 <script>
-const SUPABASE_URL='https://xzcaveuocpypnzqkrsic.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_70wMBw1XQz0IIia-V5lohA_jCsnGTy-';
+const {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY}=window.FIO_E_FOLHA_CONFIG||{};
+if(!SUPABASE_URL||!SUPABASE_PUBLISHABLE_KEY){throw new Error('Configuração do Supabase não encontrada. Execute o build antes de publicar.');}
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
 const R=v=>'R$ '+v.toFixed(2).replace('.',',');
